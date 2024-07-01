@@ -23,6 +23,7 @@ class AddComment extends Component {
       .then(response => {
         if (response.ok) {
           alert("Comment successfully posted");
+          this.props.fetchComments(this.props.asin);
           this.setState({ comment: "", rate: "5" });
         } else {
           throw new Error("Comment not posted");

@@ -39,6 +39,7 @@ class SingleComment extends Component {
       .then(response => {
         if (response.ok) {
           alert("Comment successfully deleted");
+          this.props.fetchComments(this.props.asin);
         } else {
           throw new Error("Couldn't delete comment");
         }

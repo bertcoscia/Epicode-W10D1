@@ -7,22 +7,21 @@ import { Component } from "react";
 
 class App extends Component {
   state = {
-    isSelected: false
+    isSelected: false,
+    asin: null,
+    comments: []
   };
 
-  handleClick = () => {
-    if (!this.state.isSelected) {
-      this.setState({ isSelected: true });
-    } else {
-      this.setState({ isSelected: false });
-    }
+  handleClick = asin => {
+    this.setState({ isSelected: true });
+    this.setState({ asin: asin });
   };
 
   render() {
     return (
       <div className="App">
         <MyNav />
-        <BookList genre={fantasy} handleClick={this.handleClick} />
+        <BookList genre={fantasy} handleClick={this.handleClick} comments={this.state.comments} asin={this.state.asin} isSelected={this.state.isSelected} />
       </div>
     );
   }

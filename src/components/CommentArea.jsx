@@ -3,45 +3,60 @@ import CommentsList from "./CommentsList";
 import AddComment from "./AddComment";
 import { Alert } from "react-bootstrap";
 
-const URL = "https://striveschool-api.herokuapp.com/api/comments/";
-const auth = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjZiZjk5NzdjMjM5YzAwMTUyZjRiM2MiLCJpYXQiOjE3MTk0OTA4MjksImV4cCI6MTcyMDcwMDQyOX0.DKsZ6NE4RC2q5DGQhtPu6bhYlYLaj2pWT9Zbpm7r2Ws";
-
 class CommentArea extends Component {
-  state = {
-    comments: []
-  };
-
-  fetchComments = asin => {
-    fetch(`${URL + asin}`, {
-      headers: {
-        Authorization: auth
-      }
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Couldn't get data");
-        }
-      })
-      .then(comments => {
-        this.setState({ comments: comments });
-      })
-      .catch(error => console.log(error));
-  };
-
-  componentDidMount() {
-    this.fetchComments(this.props.asin);
+  componentDidUpdate(prevProps) {
+    if (prevProps.asin !== this.props.asin) {
+      this.props.fetchComments(this.props.asin);
+    } else {
+      console.log("prevPros === this.props");
+    }
   }
 
   render() {
     return (
-      <>
-        {/* <AddComment asin={this.props.asin} /> */}
-        {this.state.comments.length > 0 && <CommentsList comments={this.state.comments} />}
-      </>
+      <div className="position-sticky" style={{ top: "30px" }}>
+        {this.props.isSelected ? (
+          <>
+            {this.props.comments.length > 0 ? (
+              <CommentsList comments={this.props.comments} fetchComments={this.props.fetchComments} asin={this.props.asin} />
+            ) : (
+              <Alert variant="warning" className="text-center">
+                <strong>There are no comments</strong>
+              </Alert>
+            )}
+            <AddComment asin={this.props.asin} comments={this.props.comments} fetchComments={this.props.fetchComments} />
+          </>
+        ) : (
+          <Alert variant="warning" className="text-center">
+            <strong>Select a book</strong>
+          </Alert>
+        )}
+      </div>
     );
   }
 }
+
+/* const CommentArea = ({ isSelected }) => {
+  if (!isSelected) {
+    return (
+      <Alert variant="warning" className="align-self-start">
+        Select a book
+      </Alert>
+    );
+  } else {
+    return (
+      <>
+        <AddComment asin={this.props.asin} />
+        {this.state.comments.lenght > 0 ? (
+          <CommentsList comments={this.props.comments} />
+        ) : (
+          <Alert variant="warning" className="align-slef-start">
+            There are no comments
+          </Alert>
+        )}
+      </>
+    );
+  }
+}; */
 
 export default CommentArea;
